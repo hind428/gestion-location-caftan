@@ -1,0 +1,208 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Mon Profil - Hind Caftan{% endblock %}
+
+{% block content %}
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 5%;
+    }
+    
+    .profile-card {
+        background: white;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    
+    .profile-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+    
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 3rem;
+        font-weight: bold;
+        color: #667eea;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .profile-header h2 {
+        margin-bottom: 0.5rem;
+    }
+    
+    .profile-body {
+        padding: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e2e8f0;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #334155;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.8rem;
+        transition: all 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    }
+    
+    .btn-save {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    
+    .btn-save:hover {
+        transform: translateY(-2px);
+    }
+    
+    .info-note {
+        background: #fef3c7;
+        padding: 1rem;
+        border-radius: 1rem;
+        margin-top: 1rem;
+        font-size: 0.8rem;
+        color: #92400e;
+    }
+    
+    hr {
+        margin: 2rem 0;
+        border: none;
+        border-top: 1px solid #e2e8f0;
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                {{ user.username|make_list|first|upper }}
+            </div>
+            <h2>{{ user.username }}</h2>
+            <p>Membre depuis {{ user.date_joined|date:"F Y" }}</p>
+        </div>
+        
+        <div class="profile-body">
+            <!-- Informations personnelles -->
+            <div class="section-title">
+                <i class="fas fa-user-circle"></i>
+                Informations personnelles
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_info">
+                
+                <div class="form-group">
+                    <label>Nom d'utilisateur</label>
+                    <input type="text" name="username" value="{{ user.username }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" value="{{ user.email }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" name="telephone" value="{{ profile.telephone|default:'' }}" placeholder="+212 6XX XXX XXX">
+                </div>
+                
+                <div class="form-group">
+                    <label>Adresse</label>
+                    <textarea name="adresse" rows="3" placeholder="Votre adresse complète">{{ profile.adresse|default:'' }}</textarea>
+                </div>
+                
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-save"></i> Enregistrer les modifications
+                </button>
+            </form>
+            
+            <hr>
+            
+            <!-- Changer mot de passe -->
+            <div class="section-title">
+                <i class="fas fa-lock"></i>
+                Changer mon mot de passe
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_password">
+                
+                <div class="form-group">
+                    <label>Mot de passe actuel</label>
+                    <input type="password" name="old_password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nouveau mot de passe</label>
+                    <input type="password" name="new_password1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Confirmer le nouveau mot de passe</label>
+                    <input type="password" name="new_password2" required>
+                </div>
+                
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-key"></i> Changer le mot de passe
+                </button>
+            </form>
+            
+            <div class="info-note">
+                <i class="fas fa-info-circle"></i>
+                Note : Après avoir changé votre mot de passe, vous resterez connecté(e).
+            </div>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 1rem;">
+        <a href="{% url 'accueil' %}" class="btn-outline">← Retour à l'accueil</a>
+    </div>
+</div>
+{% endblock %}

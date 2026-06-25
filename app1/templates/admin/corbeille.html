@@ -1,0 +1,187 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Corbeille - Hind Caftan{% endblock %}
+
+{% block content %}
+<style>
+    .corbeille-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 5%;
+    }
+    
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .page-header h1 {
+        font-size: 1.8rem;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    
+    .btn-back {
+        background: #6c757d;
+        color: white;
+        padding: 0.7rem 1.5rem;
+        border-radius: 2rem;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-back:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+    }
+    
+    .table-container {
+        background: white;
+        border-radius: 1rem;
+        overflow-x: auto;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px;
+    }
+    
+    th {
+        background: #f8fafc;
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        color: #1e293b;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid #f1f5f9;
+        color: #475569;
+    }
+    
+    tr:hover {
+        background: #f8fafc;
+    }
+    
+    .btn-restaurer {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 2rem;
+        cursor: pointer;
+        margin-right: 0.5rem;
+        transition: all 0.2s;
+    }
+    
+    .btn-restaurer:hover {
+        background: #218838;
+        transform: translateY(-1px);
+    }
+    
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 2rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .btn-delete:hover {
+        background: #c82333;
+        transform: translateY(-1px);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #94a3b8;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+</style>
+
+<div class="corbeille-container">
+    <div class="page-header">
+        <h1>
+            <i class="fas fa-trash-alt"></i>
+            🗑️ Corbeille
+        </h1>
+        <a href="{% url 'admin_dashboard' %}" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Nom</th>
+                    <th>Prix</th>
+                    <th>Date suppression</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles_supprimes %}
+                <tr>
+                    <td>#{{ article.id }}</td>
+                    <td>
+                        {% if article.image %}
+                            <img src="{{ article.image.url }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 0.5rem;">
+                        {% else %}
+                            <i class="fas fa-tshirt"></i>
+                        {% endif %}
+                    </td>
+                    <td>{{ article.nom }}</td>
+                    <td>{{ article.prix_jour }} DH</td>
+                    <td>{{ article.date_suppression|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="article_id" value="{{ article.id }}">
+                            <button type="submit" name="action" value="restaurer" class="btn-restaurer">
+                                <i class="fas fa-trash-restore"></i> Restaurer
+                            </button>
+                        </form>
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="article_id" value="{{ article.id }}">
+                            <button type="submit" name="action" value="supprimer_definitivement" class="btn-delete" onclick="return confirm('Supprimer définitivement {{ article.nom }} ?')">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <i class="fas fa-trash-alt"></i>
+                        <p>La corbeille est vide</p>
+                        <p style="font-size: 0.8rem;">Aucun article supprimé</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Créer un compte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1b3e72 0%, #e6e9ef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .card {
+            max-width: 500px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.01);
+        }
+
+        .inner {
+            padding: 2rem 2rem 2.2rem;
+        }
+
+        /* Style pour les messages */
+        .messages-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .alert {
+            padding: 0.875rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fed7aa 0%, #fed7aa 100%);
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .alert-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .alert-content {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .alert-close {
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            flex-shrink: 0;
+        }
+
+        .alert-close:hover {
+            opacity: 1;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .register-header h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1a2a3a, #2c3e50);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+
+        .register-header p {
+            color: #5b6e8c;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 1.3rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.4rem;
+            letter-spacing: -0.2px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            font-size: 1rem;
+            background-color: #f8fafd;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1.2rem;
+            transition: all 0.2s;
+            outline: none;
+            color: #1e293b;
+        }
+
+        .input-group input:focus {
+            border-color: #3b82f6;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+        }
+
+        .btn-register {
+            width: 100%;
+            background: #1f2e3e;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 1.8rem;
+            cursor: pointer;
+            margin-top: 0.7rem;
+            margin-bottom: 1.4rem;
+            transition: background 0.25s, transform 0.1s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.03);
+        }
+
+        .btn-register:hover {
+            background: #0f1a24;
+            transform: translateY(-1px);
+        }
+
+        .btn-register:active {
+            transform: translateY(1px);
+        }
+
+        .or-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 0.6rem 0 1.2rem;
+            color: #8aa0bb;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1.5px solid #e9edf2;
+        }
+
+        .or-divider span {
+            margin: 0 12px;
+        }
+
+        .social-register {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.7rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 2rem;
+            padding: 0.7rem 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: #fefefe;
+        }
+
+        .social-btn:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .login-link {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #475569;
+            border-top: 1px solid #eff3f8;
+            padding-top: 1.4rem;
+            margin-top: 0.2rem;
+        }
+
+        .login-link a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 700;
+            margin-left: 6px;
+            transition: color 0.2s;
+        }
+
+        .login-link a:hover {
+            color: #1e40af;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .inner {
+                padding: 1.5rem;
+            }
+            .register-header h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="inner">
+        <!-- Messages d'alerte -->
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                <span class="alert-icon">
+                    {% if message.tags == 'success' %}✓
+                    {% elif message.tags == 'error' %}✗
+                    {% elif message.tags == 'warning' %}⚠
+                    {% else %}ℹ
+                    {% endif %}
+                </span>
+                <span class="alert-content">{{ message }}</span>
+                <span class="alert-close" onclick="this.parentElement.style.display='none';">×</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="register-header">
+            <h1>Hello!</h1>
+            <p>Register to get started</p>
+        </div>
+
+        <form action="{% url 'register' %}" method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="johndoe" autocomplete="username" required>
+            </div>
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="hello@example.com" autocomplete="email" required>
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Create a strong password" autocomplete="new-password" required>
+            </div>
+            <div class="input-group">
+                <label>Confirm password</label>
+                <input type="password" name="confirm_password" placeholder="Confirm your password" autocomplete="off" required>
+            </div>
+            <button type="submit" class="btn-register">Register</button>
+        </form>
+
+        <div class="or-divider">
+            <span>Or Register with</span>
+        </div>
+        <div class="social-register">
+            <button class="social-btn" type="button">
+                <span>G</span> Google
+            </button>
+            <button class="social-btn" type="button">
+                <span>𝕏</span> Twitter
+            </button>
+        </div>
+
+        <div class="login-link">
+            Already have an account? <a href="{% url 'login' %}">Login Now</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            alert.style.opacity = '0';
+            setTimeout(function() {
+                alert.style.display = 'none';
+            }, 300);
+        });
+    }, 5000);
+</script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réserver - {{ article.nom }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f2f5 0%, #e6e9ef 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            background: linear-gradient(135deg, #1a2a3a, #2c3e50);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .card {
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.1);
+        }
+
+        .card h1 {
+            font-size: 1.8rem;
+            color: #1f2e3e;
+            margin-bottom: 1rem;
+        }
+
+        .service-info {
+            background: #f8fafd;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-info p {
+            margin: 0.5rem 0;
+            color: #2c3e50;
+        }
+
+        .prix {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2e3e;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+
+        .total {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            padding: 1rem;
+            border-radius: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .total p {
+            font-size: 1.1rem;
+            color: #065f46;
+        }
+
+        .total span {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #065f46;
+        }
+
+        .btn-confirmer {
+            width: 100%;
+            background: #1f2e3e;
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 2rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            transition: background 0.3s;
+        }
+
+        .btn-confirmer:hover {
+            background: #0f1a24;
+        }
+
+        .btn-retour {
+            background: #6b7280;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn-retour:hover {
+            background: #4b5563;
+        }
+
+        .messages {
+            margin-bottom: 1rem;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #10b981;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="{% url 'accueil' %}" class="logo">✨ Location Hind</a>
+        </nav>
+
+        <div class="card">
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <h1>📅 Réserver {{ article.nom }}</h1>
+            
+            <div class="service-info">
+                <p><strong>{{ article.nom }}</strong></p>
+                <p>{{ article.description|truncatewords:15 }}</p>
+                <p class="prix">{{ article.prix }} DH / jour</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>📅 Date de réservation</label>
+                    <input type="date" name="date_debut" min="{{ today }}" required>
+                </div>
+                <div class="form-group">
+                    <label>⏰ Heure (optionnel)</label>
+                    <input type="time" name="heure_service" value="14:00">
+                </div>
+                <div class="form-group">
+                    <label>💳 Méthode de paiement</label>
+                    <select name="methode_paiement" required>
+                        <option value="">Choisir une méthode</option>
+                        <option value="carte">💳 Carte bancaire</option>
+                        <option value="paypal">🅿️ PayPal</option>
+                        <option value="virement">🏦 Virement bancaire</option>
+                        <option value="especes">💵 Espèces (sur place)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>📝 Notes (optionnel)</label>
+                    <textarea name="notes" rows="3" placeholder="Vos remarques..."></textarea>
+                </div>
+
+                <div class="total">
+                    <p>💰 Montant total</p>
+                    <span>{{ article.prix }} DH</span>
+                </div>
+
+                <button type="submit" class="btn-confirmer">✅ Confirmer et payer</button>
+            </form>
+            
+            <a href="{% url 'accueil' %}" class="btn-retour">← Retour à l'accueil</a>
+        </div>
+    </div>
+</body>
+</html>

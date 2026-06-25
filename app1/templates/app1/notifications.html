@@ -1,0 +1,51 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Mes Notifications - Tarz Maroc{% endblock %}
+
+{% block content %}
+<style>
+    .notif-container {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 0 5%;
+    }
+    .notif-item {
+        background: white;
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .notif-non-lue {
+        border-left: 4px solid #8B4513;
+    }
+    .btn-lire {
+        background: none;
+        border: none;
+        color: #8B4513;
+        cursor: pointer;
+    }
+</style>
+
+<div class="notif-container">
+    <h1>Mes Notifications</h1>
+    <a href="{% url 'tout_marquer_lu' %}">Tout marquer comme lu</a>
+    
+    {% for notif in notifications %}
+    <div class="notif-item {% if not notif.lu %}notif-non-lue{% endif %}">
+        <div>
+            <strong>{{ notif.titre }}</strong>
+            <p>{{ notif.message }}</p>
+            <small>{{ notif.date|date:"d/m/Y H:i" }}</small>
+        </div>
+        {% if not notif.lu %}
+        <a href="{% url 'marquer_lu' notif.id %}" class="btn-lire">✓ Marquer lu</a>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>Aucune notification</p>
+    {% endfor %}
+</div>
+{% endblock %}

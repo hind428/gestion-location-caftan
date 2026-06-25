@@ -1,0 +1,81 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Paiement - Hind Caftan & Tradition{% endblock %}
+
+{% block content %}
+<style>
+    .payment-container {
+        max-width: 600px;
+        margin: 3rem auto;
+        padding: 0 5%;
+    }
+    .payment-card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    .payment-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .payment-header h1 {
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+    .resume {
+        background: #f5f7fb;
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-bottom: 2rem;
+    }
+    .total {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #667eea;
+        text-align: center;
+        margin: 1rem 0;
+    }
+    .btn-payer {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+    .btn-payer:hover {
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="payment-container">
+    <div class="payment-card">
+        <div class="payment-header">
+            <h1><i class="fas fa-credit-card"></i> Paiement sécurisé</h1>
+            <p>Finalisez votre réservation</p>
+        </div>
+        
+        <div class="resume">
+            <h3>{{ reservation.vetement.nom }}</h3>
+            <p>Du {{ reservation.date_debut|date:"d/m/Y" }} au {{ reservation.date_fin|date:"d/m/Y" }}</p>
+            <div class="total">{{ reservation.montant_total }} DH</div>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn-payer">
+                <i class="fas fa-lock"></i> Payer {{ reservation.montant_total }} DH
+            </button>
+        </form>
+        
+        <p style="text-align: center; margin-top: 1rem; font-size: 0.8rem; color: #888;">
+            <i class="fas fa-shield-alt"></i> Paiement sécurisé par Stripe
+        </p>
+    </div>
+</div>
+{% endblock %}

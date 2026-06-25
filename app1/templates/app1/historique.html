@@ -1,0 +1,79 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Mon Historique - Hind Caftan & Tradition{% endblock %}
+
+{% block content %}
+<style>
+    .historique-container {
+        max-width: 1000px;
+        margin: 3rem auto;
+        padding: 0 5%;
+    }
+    .historique-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 1rem 1rem 0 0;
+    }
+    .historique-table {
+        width: 100%;
+        background: white;
+        border-collapse: collapse;
+        border-radius: 0 0 1rem 1rem;
+        overflow: hidden;
+    }
+    .historique-table th {
+        background: #f0f2f5;
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        color: #333;
+    }
+    .historique-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+        color: #555;
+    }
+    .historique-table tr:hover {
+        background: #f8f9fa;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: white;
+        border-radius: 1rem;
+    }
+</style>
+
+<div class="historique-container">
+    <div class="historique-header">
+        <h1><i class="fas fa-history"></i> Mon Historique</h1>
+        <p>Toutes vos actions sur la plateforme</p>
+    </div>
+    
+    {% if historique %}
+    <table class="historique-table">
+        <thead>
+            <tr>
+                <th>Date & Heure</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in historique %}
+            <tr>
+                <td style="white-space: nowrap;">{{ item.date|date:"d/m/Y H:i" }}</td>
+                <td>{{ item.action }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-history" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+        <p>Aucun historique disponible pour le moment.</p>
+        <p style="font-size: 0.9rem; color: #888;">Les actions que vous effectuerez apparaîtront ici.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

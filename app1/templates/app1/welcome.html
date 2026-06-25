@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<div class="phone">
+
+    <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=800&auto=format&fit=crop" class="top-image">
+
+    <a href="{% url 'login' %}">
+        <button class="btn btn-dark">Login</button>
+    </a>
+
+    <a href="{% url 'register' %}">
+        <button class="btn btn-light">Register</button>
+    </a>
+
+    <div class="link">
+        <a href="#">Continue as a guest</a>
+         </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% extends 'app1/base.html' %}
+
+{% block content %}
+
+<style>
+
+.add-box{
+    width:700px;
+    margin:auto;
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 0 20px rgba(0,0,0,0.1);
+}
+
+.add-box h1{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+</style>
+
+<div class="add-box">
+    <h1>Ajouter un vêtement</h1>
+
+<form method="POST"
+      enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        Ajouter vêtement
+    </button>
+
+</form>
+
+</div>
+
+{% endblock %}

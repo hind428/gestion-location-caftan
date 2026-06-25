@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ article.nom }} - Détails</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f2f5 0%, #e6e9ef 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1a2a3a, #2c3e50);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .btn-logout {
+            background: #ef4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            text-decoration: none;
+        }
+
+        /* Messages */
+        .messages {
+            margin-bottom: 1rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        /* Détails article */
+        .detail-container {
+            background: white;
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.1);
+        }
+
+        .detail-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        /* Galerie images */
+        .image-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 400px;
+            background: #f0f2f5;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thumbnail-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+
+        .thumbnail {
+            height: 80px;
+            background: #f0f2f5;
+            border-radius: 0.8rem;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .thumbnail:hover, .thumbnail.active {
+            border-color: #3b82f6;
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Infos article */
+        .article-info h1 {
+            font-size: 2rem;
+            color: #1f2e3e;
+            margin-bottom: 0.5rem;
+        }
+
+        .marque {
+            color: #5b6e8c;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .prix {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1f2e3e;
+            margin-bottom: 1rem;
+        }
+
+        .prix small {
+            font-size: 0.9rem;
+            color: #5b6e8c;
+        }
+
+        .specs {
+            background: #f8fafd;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin: 1rem 0;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .spec-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .spec-value {
+            color: #5b6e8c;
+        }
+
+        .disponible {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: #d1fae5;
+            color: #065f46;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 1rem 0;
+        }
+
+        /* Formulaire de réservation */
+        .reservation-form {
+            background: #f8fafd;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1rem;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #3b82f6;
+        }
+
+        .btn-reserver {
+            width: 100%;
+            background: #1f2e3e;
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 2rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .btn-reserver:hover {
+            background: #0f1a24;
+        }
+
+        .btn-retour {
+            background: #6b7280;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 2rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .detail-content {
+                grid-template-columns: 1fr;
+            }
+            .navbar {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <a href="{% url 'accueil' %}" class="logo">✨ Location Hind</a>
+            <div class="nav-links">
+                <a href="{% url 'accueil' %}">Accueil</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'mes_reservations' %}">Mes réservations</a>
+                    <a href="{% url 'logout' %}" class="btn-logout">Déconnexion</a>
+                {% else %}
+                    <a href="{% url 'login' %}">Connexion</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Détails article -->
+        <div class="detail-container">
+            <div class="detail-content">
+                <!-- Galerie -->
+                <div class="image-gallery">
+                    <div class="main-image" id="mainImage">
+                        {% if article.image_principale %}
+                            <img src="{{ article.image_principale.url }}" alt="{{ article.nom }}" id="mainImg">
+                        {% else %}
+                            <span style="font-size: 4rem;">👕</span>
+                        {% endif %}
+                    </div>
+                    <div class="thumbnail-grid">
+                        {% if article.image_principale %}
+                        <div class="thumbnail active" onclick="changeImage('{{ article.image_principale.url }}')">
+                            <img src="{{ article.image_principale.url }}" alt="Principal">
+                        </div>
+                        {% endif %}
+                        {% if article.image1 %}
+                        <div class="thumbnail" onclick="changeImage('{{ article.image1.url }}')">
+                            <img src="{{ article.image1.url }}" alt="Image 1">
+                        </div>
+                        {% endif %}
+                        {% if article.image2 %}
+                        <div class="thumbnail" onclick="changeImage('{{ article.image2.url }}')">
+                            <img src="{{ article.image2.url }}" alt="Image 2">
+                        </div>
+                        {% endif %}
+                        {% if article.image3 %}
+                        <div class="thumbnail" onclick="changeImage('{{ article.image3.url }}')">
+                            <img src="{{ article.image3.url }}" alt="Image 3">
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Infos -->
+                <div class="article-info">
+                    <h1>{{ article.nom }}</h1>
+                    <div class="marque">Marque: {{ article.marque|default:"Non spécifiée" }}</div>
+                    
+                    <div class="prix">{{ article.prix_jour }} DH <small>/ jour</small></div>
+                    
+                    {% if article.est_disponible %}
+                        <span class="disponible">✓ Disponible</span>
+                    {% else %}
+                        <span class="disponible" style="background:#fee2e2; color:#991b1b;">✗ Non disponible</span>
+                    {% endif %}
+
+                    <div class="specs">
+                        <div class="spec-item">
+                            <span class="spec-label">📏 Taille</span>
+                            <span class="spec-value">{{ article.taille|default:"Non spécifiée" }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">🎨 Couleur</span>
+                            <span class="spec-value">{{ article.couleur|default:"Non spécifiée" }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">🧵 Matière</span>
+                            <span class="spec-value">{{ article.matiere|default:"Non spécifiée" }}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">💰 Caution</span>
+                            <span class="spec-value">{{ article.caution }} DH</span>
+                        </div>
+                    </div>
+
+                    <h3>Description</h3>
+                    <p style="margin: 1rem 0; color: #5b6e8c;">{{ article.description }}</p>
+
+                    
+                    {% if user.is_authenticated %}
+                        <div class="reservation-form">
+                            <h3>📅 Réserver cet article</h3>
+                            <form method="post" action="{% url 'reserver_article' article.id %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label>Date de début</label>
+                                    <input type="date" name="date_debut" min="{{ today }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Date de fin</label>
+                                    <input type="date" name="date_fin" min="{{ today }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Notes (optionnel)</label>
+                                    <textarea name="notes" rows="3" placeholder="Vos remarques..."></textarea>
+                                </div>
+                                <button type="submit" class="btn-reserver">Confirmer la réservation</button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <div class="reservation-form" style="text-align: center;">
+                            <p>🔐 Connectez-vous pour réserver cet article</p>
+                            <a href="{% url 'login' %}" class="btn-reserver" style="display: inline-block; text-decoration: none;">Se connecter</a>
+                        </div>
+                    {% endif %}
+                    
+                    <a href="{% url 'accueil' %}" class="btn-retour">← Retour à l'accueil</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function changeImage(src) {
+            document.getElementById('mainImg').src = src;
+            
+            document.querySelectorAll('.thumbnail').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Accueil - Hind Caftan & Tradition{% endblock %}
+
+{% block content %}
+<style>
+    .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 4rem 5%;
+        text-align: center;
+        color: white;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero::before {
+        content: '⭐';
+        position: absolute;
+        font-size: 20rem;
+        opacity: 0.1;
+        bottom: -5rem;
+        right: -5rem;
+    }
+    
+    .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        font-family: 'Traditional Arabic', 'Segoe UI', serif;
+    }
+    
+    .hero p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+    
+    /* Catégories */
+    .categories-section {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 5%;
+    }
+    
+    .categories-grid {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .category-card {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 3rem;
+        padding: 0.7rem 1.8rem;
+        text-decoration: none;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+    }
+    
+    .category-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+    }
+    
+    .category-card i {
+        font-size: 1rem;
+        color: white;
+    }
+    
+    .category-card span {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: white;
+    }
+    
+    .section-title {
+        text-align: center;
+        font-size: 2rem;
+        margin: 3rem 0 2rem;
+        position: relative;
+        color: #667eea;
+    }
+    
+    .section-title::after {
+        
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.5rem;
+        color: #667eea;
+    }
+    
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 5%;
+    }
+    
+    .product-card {
+        background: white;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        transition: all 0.3s;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid rgba(102,126,234,0.1);
+    }
+    
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(102,126,234,0.15);
+    }
+    
+    .product-image {
+        height: 280px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    
+    .product-card:hover .product-image img {
+        transform: scale(1.1);
+    }
+    
+    .product-badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: rgba(102,126,234,0.9);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 2rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+    
+    .product-info {
+        padding: 1.5rem;
+    }
+    
+    .product-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #667eea;
+    }
+    
+    .product-price {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #667eea;
+        margin: 0.5rem 0;
+    }
+    
+    .btn-details {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 2rem;
+        text-decoration: none;
+        font-weight: 600;
+        width: 100%;
+        text-align: center;
+        transition: transform 0.3s;
+    }
+    
+    .btn-details:hover {
+        transform: translateY(-2px);
+    }
+    
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 4rem auto;
+        padding: 0 5%;
+        text-align: center;
+    }
+    
+    .feature {
+        padding: 2rem;
+        background: rgba(102,126,234,0.05);
+        border-radius: 1rem;
+    }
+    
+    .feature i {
+        font-size: 2.5rem;
+        color: #667eea;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<section class="hero">
+    <h1>Hind Caftan & Tradition</h1>
+    <p>Location de vêtements traditionnels marocains de luxe</p>
+    <p style="font-size: 1rem; margin-top: 1rem;">Caftans | Takchitas | Djellabas | Jabador</p>
+</section>
+
+<!-- Catégories -->
+<div class="categories-section">
+    <div class="categories-grid">
+        <a href="{% url 'homme' %}" class="category-card">
+            <i class="fas fa-user-tie"></i>
+            <span>Homme</span>
+        </a>
+        <a href="{% url 'femme' %}" class="category-card">
+            <i class="fas fa-female"></i>
+            <span>Femme</span>
+        </a>
+    </div>
+</div>
+
+<h2 class="section-title">✨ Nos Créations Traditionnelles</h2>
+<div class="products-grid">
+    {% for vetement in vetements %}
+    <div class="product-card">
+        <div class="product-image">
+            {% if vetement.image %}
+                <img src="{{ vetement.image.url }}" alt="{{ vetement.nom }}">
+            {% else %}
+                <i class="fas fa-crown"></i>
+            {% endif %}
+            <div class="product-badge">{{ vetement.get_type_vetement_display }}</div>
+        </div>
+        <div class="product-info">
+            <h3 class="product-title">{{ vetement.nom }}</h3>
+            <p style="color: #888; font-size: 0.85rem;">{{ vetement.description|truncatewords:10 }}</p>
+            <div class="product-price">{{ vetement.prix_jour }} DH <small>/ jour</small></div>
+            <a href="{% url 'detail' vetement.id %}" class="btn-details">Voir détails →</a>
+        </div>
+    </div>
+    {% empty %}
+    <p style="text-align: center; grid-column: 1/-1;">Chargement des collections...</p>
+    {% endfor %}
+</div>
+
+<div class="features">
+    <div class="feature">
+        <i class="fas fa-hand-sparkles"></i>
+        <h3>Nettoyage traditionnel</h3>
+        <p>Nettoyage à sec professionnel</p>
+    </div>
+    <div class="feature">
+        <i class="fas fa-truck-fast"></i>
+        <h3>Livraison Maroc</h3>
+        <p>Dans tout le Royaume</p>
+    </div>
+    <div class="feature">
+        <i class="fas fa-star-and-crescent"></i>
+        <h3>Qualité Royale</h3>
+        <p>Vêtements de luxe authentiques</p>
+    </div>
+</div>
+{% endblock %}

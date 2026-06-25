@@ -1,0 +1,99 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Laisser un avis - {{ article.nom }}{% endblock %}
+
+{% block content %}
+<style>
+    .avis-container {
+        max-width: 600px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    .note-container {
+        display: flex;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+    .star {
+        font-size: 2rem;
+        cursor: pointer;
+        color: #ddd;
+        transition: color 0.2s;
+    }
+    .star.active {
+        color: #f59e0b;
+    }
+    .star:hover {
+        color: #f59e0b;
+    }
+    textarea {
+        width: 100%;
+        padding: 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        resize: vertical;
+    }
+    .btn-submit {
+        width: 100%;
+        padding: 0.8rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 2rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+</style>
+
+<div class="avis-container">
+    <h2>📝 Laisser un avis pour</h2>
+    <h3>{{ article.nom }}</h3>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="note-container">
+            <label>Votre note :</label>
+            <div id="stars">
+                {% for i in "12345" %}
+                    <span class="star {% if avis_existant and avis_existant.note >= forloop.counter %}active{% endif %}" data-value="{{ forloop.counter }}">★</span>
+                {% endfor %}
+            </div>
+        </div>
+        <input type="hidden" name="note" id="note_value" value="{{ avis_existant.note|default:5 }}">
+        
+        <div class="form-group">
+            <label>Votre commentaire :</label>
+            <textarea name="commentaire" rows="5" placeholder="Partagez votre expérience...">{{ avis_existant.commentaire|default:'' }}</textarea>
+        </div>
+        
+        <button type="submit" class="btn-submit">
+            {% if avis_existant %}Modifier mon avis{% else %}Publier mon avis{% endif %}
+        </button>
+    </form>
+</div>
+
+<script>
+    const stars = document.querySelectorAll('.star');
+    const noteInput = document.getElementById('note_value');
+    
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+            noteInput.value = value;
+            
+            stars.forEach(s => {
+                if (parseInt(s.getAttribute('data-value')) <= parseInt(value)) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

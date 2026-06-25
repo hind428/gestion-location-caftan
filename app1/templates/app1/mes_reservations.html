@@ -1,0 +1,389 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Mes réservations - Hind Caftan{% endblock %}
+
+{% block content %}
+<style>
+    .reservations-container {
+        max-width: 1200px;
+        margin: 3rem auto;
+        padding: 0 5%;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+        color: #888;
+        margin-bottom: 2rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+
+    .reservation-card {
+        background: white;
+        border-radius: 1.5rem;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        transition: all 0.3s;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .reservation-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .reservation-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .reservation-status {
+        padding: 0.3rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status-confirmee { background: #28a745; }
+    .status-en_attente { background: #ffc107; color: #333; }
+    .status-terminee { background: #6c757d; }
+    .status-annulee { background: #dc3545; }
+
+    .reservation-body {
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 1.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .reservation-image {
+        width: 80px;
+        height: 80px;
+        background: #f5f7fb;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .reservation-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .reservation-details h3 {
+        margin-bottom: 0.5rem;
+    }
+
+    .reservation-dates {
+        display: flex;
+        gap: 1.5rem;
+        color: #888;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+
+    .reservation-price {
+        text-align: right;
+    }
+
+    .price-amount {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+
+    .btn-cancel {
+        background: none;
+        border: 1px solid #dc3545;
+        color: #dc3545;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        cursor: pointer;
+        margin-top: 0.5rem;
+        transition: all 0.3s;
+    }
+
+    .btn-cancel:hover {
+        background: #dc3545;
+        color: white;
+    }
+
+    /* ==================== MESSAGES ET NOTES ==================== */
+    .messages-section {
+        border-top: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        background: #f8fafc;
+    }
+
+    .messages-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        color: #1e293b;
+    }
+
+    .messages-list {
+        max-height: 300px;
+        overflow-y: auto;
+        margin-bottom: 1rem;
+    }
+
+    .message-item {
+        padding: 0.8rem;
+        margin-bottom: 0.8rem;
+        border-radius: 1rem;
+    }
+
+    .message-client {
+        background: #d1fae5;
+        border-left: 4px solid #28a745;
+    }
+
+    .message-gestionnaire {
+        background: #e0e7ff;
+        border-left: 4px solid #667eea;
+    }
+
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .message-expediteur {
+        font-weight: 600;
+    }
+
+    .message-date {
+        color: #666;
+    }
+
+    .message-contenu {
+        color: #333;
+        font-size: 0.9rem;
+    }
+
+    .reply-form {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .reply-form textarea {
+        flex: 1;
+        padding: 0.8rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        resize: vertical;
+        font-family: inherit;
+    }
+
+    .reply-form textarea:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+
+    .reply-form button {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 2rem;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .reply-form button:hover {
+        transform: translateY(-2px);
+    }
+
+    .manager-notes {
+        background: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        padding: 1rem;
+        border-radius: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .manager-notes h4 {
+        color: #92400e;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .empty-messages {
+        color: #94a3b8;
+        font-size: 0.9rem;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem;
+        background: white;
+        border-radius: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .reservation-body {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+        .reservation-price {
+            text-align: center;
+        }
+        .reply-form {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="reservations-container">
+    <h1 class="page-title">📋 Mes réservations</h1>
+    <p class="page-subtitle">Gérez vos locations et communiquez avec le gestionnaire</p>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_reservations }}</div>
+            <div>Total réservations</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ reservations_actives }}</div>
+            <div>Réservations actives</div>
+        </div>
+    </div>
+
+    {% if reservations %}
+        {% for reservation in reservations %}
+        <div class="reservation-card">
+            <div class="reservation-header">
+                <span><i class="fas fa-receipt"></i> Réservation #{{ reservation.id }}</span>
+                <span class="reservation-status status-{{ reservation.statut }}">
+                    {{ reservation.get_statut_display }}
+                </span>
+            </div>
+            <div class="reservation-body">
+                <div class="reservation-image">
+                    {% if reservation.vetement.image %}
+                        <img src="{{ reservation.vetement.image.url }}" alt="">
+                    {% else %}
+                        <i class="fas fa-tshirt" style="font-size: 2rem;"></i>
+                    {% endif %}
+                </div>
+                <div class="reservation-details">
+                    <h3>{{ reservation.vetement.nom }}</h3>
+                    <div class="reservation-dates">
+                        <span><i class="fas fa-calendar-alt"></i> Début: {{ reservation.date_debut|date:"d/m/Y" }}</span>
+                        <span><i class="fas fa-calendar-check"></i> Fin: {{ reservation.date_fin|date:"d/m/Y" }}</span>
+                    </div>
+                </div>
+                <div class="reservation-price">
+                    <div class="price-amount">{{ reservation.montant_total }} DH</div>
+                    <div>{{ reservation.nombre_jours }} jours</div>
+                    {% if reservation.statut == 'en_attente' or reservation.statut == 'confirmee' %}
+                    <form method="post" action="{% url 'annuler_reservation' reservation.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-cancel">
+                            <i class="fas fa-times"></i> Annuler
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- ==================== NOTES DU GESTIONNAIRE ==================== -->
+            {% if reservation.manager_notes %}
+            <div class="manager-notes">
+                <h4><i class="fas fa-pen"></i> Note du gestionnaire</h4>
+                <p>{{ reservation.manager_notes }}</p>
+            </div>
+            {% endif %}
+            
+            <!-- ==================== SECTION MESSAGES ==================== -->
+            <div class="messages-section">
+                <div class="messages-title">
+                    <i class="fas fa-comments"></i>
+                    <h4>Discussion avec le gestionnaire</h4>
+                </div>
+                
+                <div class="messages-list">
+                    {% for msg in reservation.messages.all %}
+                    <div class="message-item message-{{ msg.expediteur }}">
+                        <div class="message-header">
+                            <span class="message-expediteur">
+                                {% if msg.expediteur == 'client' %}
+                                    👤 Moi
+                                {% else %}
+                                    👨‍💼 Gestionnaire
+                                {% endif %}
+                            </span>
+                            <span class="message-date">{{ msg.date|date:"d/m/Y H:i" }}</span>
+                        </div>
+                        <div class="message-contenu">{{ msg.message }}</div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-messages">
+                        <i class="fas fa-comment-dots"></i> Aucun message pour le moment
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Formulaire pour envoyer un message -->
+                <form method="post" action="{% url 'client_envoyer_message' reservation.id %}" class="reply-form">
+                    {% csrf_token %}
+                    <textarea name="message" rows="2" placeholder="💬 Écrire un message au gestionnaire..."></textarea>
+                    <button type="submit"><i class="fas fa-paper-plane"></i> Envoyer</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-calendar-times" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
+            <h3>Aucune réservation</h3>
+            <p>Vous n'avez pas encore effectué de réservation.</p>
+            <a href="{% url 'accueil' %}" class="btn-primary" style="display: inline-block; margin-top: 1rem;">
+                <i class="fas fa-shopping-bag"></i> Découvrir nos articles
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

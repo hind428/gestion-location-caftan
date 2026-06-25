@@ -1,0 +1,382 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Gestion des articles - Hind Caftan{% endblock %}
+
+{% block content %}
+<style>
+    .gestion-container {
+        max-width: 1400px;
+        margin: 2rem auto;
+        padding: 0 5%;
+    }
+    
+    /* Header */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .page-header h1 {
+        font-size: 1.8rem;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    
+    .page-header h1 i {
+        color: #667eea;
+    }
+    
+    .stats-badge {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .stat-item {
+        background: #f1f5f9;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.8rem;
+        color: #1e293b;
+    }
+    
+    .stat-item i {
+        margin-right: 0.3rem;
+        color: #667eea;
+    }
+    
+    .btn-back {
+        background: #6c757d;
+        color: white;
+        padding: 0.7rem 1.5rem;
+        border-radius: 2rem;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-back:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+    }
+    
+    /* Filtres */
+    .filters {
+        background: white;
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .filter-input {
+        padding: 0.5rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 2rem;
+        width: 250px;
+    }
+    
+    .filter-select {
+        padding: 0.5rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 2rem;
+        background: white;
+    }
+    
+    /* Tableau */
+    .table-container {
+        background: white;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .table-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        display: grid;
+        grid-template-columns: 60px 1fr 120px 120px 100px 150px;
+        gap: 0.5rem;
+        padding: 1rem;
+        font-weight: 600;
+    }
+    
+    .table-row {
+        display: grid;
+        grid-template-columns: 60px 1fr 120px 120px 100px 150px;
+        gap: 0.5rem;
+        padding: 1rem;
+        border-bottom: 1px solid #f1f5f9;
+        transition: background 0.2s;
+        align-items: center;
+    }
+    
+    .table-row:hover {
+        background: #f8fafc;
+    }
+    
+    .product-name {
+        font-weight: 500;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    
+    .product-image {
+        width: 40px;
+        height: 40px;
+        border-radius: 0.5rem;
+        object-fit: cover;
+        background: #f1f5f9;
+    }
+    
+    .badge-disponible {
+        background: #d1fae5;
+        color: #065f46;
+        padding: 0.3rem 0.8rem;
+        border-radius: 2rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    
+    .badge-indisponible {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 0.3rem 0.8rem;
+        border-radius: 2rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    
+    .btn-group {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-toggle {
+        background: #f59e0b;
+        color: white;
+        border: none;
+        padding: 0.3rem 0.8rem;
+        border-radius: 2rem;
+        cursor: pointer;
+        font-size: 0.7rem;
+        transition: transform 0.2s;
+    }
+    
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 0.3rem 0.8rem;
+        border-radius: 2rem;
+        cursor: pointer;
+        font-size: 0.7rem;
+        transition: transform 0.2s;
+    }
+    
+    .btn-toggle:hover, .btn-delete:hover {
+        transform: translateY(-1px);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #94a3b8;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .page-link {
+        padding: 0.5rem 1rem;
+        background: white;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        color: #1e293b;
+    }
+    
+    .page-link.active {
+        background: #667eea;
+        color: white;
+    }
+    
+    @media (max-width: 992px) {
+        .table-header, .table-row {
+            grid-template-columns: 50px 1fr 100px 100px 80px 120px;
+            font-size: 0.8rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .table-header {
+            display: none;
+        }
+        .table-row {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+        .table-row:before {
+            content: attr(data-label);
+            font-weight: bold;
+            display: inline-block;
+            width: 100px;
+        }
+        .btn-group {
+            justify-content: flex-start;
+        }
+    }
+</style>
+
+<div class="gestion-container">
+    <div class="page-header">
+        <h1>
+            <i class="fas fa-tshirt"></i>
+            Gestion des articles
+        </h1>
+        <div class="stats-badge">
+            <span class="stat-item"><i class="fas fa-box"></i> Total: {{ articles|length }}</span>
+            <a href="{% url 'admin_dashboard' %}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+        </div>
+    </div>
+    
+    <!-- Filtres -->
+    <div class="filters">
+        <input type="text" id="searchInput" class="filter-input" placeholder="🔍 Rechercher un article...">
+        <select id="typeFilter" class="filter-select">
+            <option value="">Tous les types</option>
+            <option value="caftan">Caftan</option>
+            <option value="takchita">Takchita</option>
+            <option value="djellaba">Djellaba</option>
+            <option value="jabador">Jabador</option>
+        </select>
+        <select id="statusFilter" class="filter-select">
+            <option value="">Tous les statuts</option>
+            <option value="disponible">Disponible</option>
+            <option value="indisponible">Indisponible</option>
+        </select>
+    </div>
+    
+    <!-- Tableau des articles -->
+    <div class="table-container">
+        <div class="table-header">
+            <span>ID</span>
+            <span>Article</span>
+            <span>Type</span>
+            <span>Prix/jour</span>
+            <span>Statut</span>
+            <span>Actions</span>
+        </div>
+        
+        <div id="articlesList">
+            {% for article in articles %}
+            <div class="table-row" data-type="{{ article.type_marocain }}" data-status="{% if article.est_disponible %}disponible{% else %}indisponible{% endif %}">
+                <span><strong>#{{ article.id }}</strong></span>
+                <span class="product-name">
+                    {% if article.image %}
+                        <img src="{{ article.image.url }}" class="product-image">
+                    {% else %}
+                        <div class="product-image" style="display: flex; align-items: center; justify-content: center; background: #f1f5f9;">
+                            <i class="fas fa-tshirt"></i>
+                        </div>
+                    {% endif %}
+                    {{ article.nom|truncatechars:35 }}
+                </span>
+                <span>{{ article.get_type_marocain_display|default:"-" }}</span>
+                <span><strong style="color: #667eea;">{{ article.prix_jour }} DH</strong></span>
+                <span>
+                    {% if article.est_disponible %}
+                        <span class="badge-disponible"><i class="fas fa-check-circle"></i> Disponible</span>
+                    {% else %}
+                        <span class="badge-indisponible"><i class="fas fa-times-circle"></i> Indisponible</span>
+                    {% endif %}
+                </span>
+                <td class="btn-group">
+                    <form method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="article_id" value="{{ article.id }}">
+                        <button type="submit" name="action" value="toggle_disponible" class="btn-toggle">
+                            <i class="fas fa-sync-alt"></i> Toggle
+                        </button>
+                        <button type="submit" name="action" value="supprimer" class="btn-delete" onclick="return confirm('Supprimer {{ article.nom }} ?')">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </button>
+                    </form>
+                </td>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <p>Aucun article trouvé</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Filtre en temps réel
+    const searchInput = document.getElementById('searchInput');
+    const typeFilter = document.getElementById('typeFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const articlesList = document.getElementById('articlesList');
+    const rows = articlesList.querySelectorAll('.table-row');
+    
+    function filterArticles() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const typeValue = typeFilter.value;
+        const statusValue = statusFilter.value;
+        
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            const rowType = row.getAttribute('data-type');
+            const rowStatus = row.getAttribute('data-status');
+            
+            let show = true;
+            
+            if (searchTerm && !text.includes(searchTerm)) show = false;
+            if (typeValue && rowType !== typeValue) show = false;
+            if (statusValue && rowStatus !== statusValue) show = false;
+            
+            row.style.display = show ? 'grid' : 'none';
+        });
+    }
+    
+    searchInput.addEventListener('keyup', filterArticles);
+    typeFilter.addEventListener('change', filterArticles);
+    statusFilter.addEventListener('change', filterArticles);
+</script>
+{% endblock %}
